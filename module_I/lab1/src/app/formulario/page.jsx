@@ -1,10 +1,11 @@
 // src/app/formulario/page.jsx
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from '../../hooks/useForm';
 
 const FormularioPage = () => {
+  // Usando el hook personalizado para manejar el estado del formulario
   const { values, handleChange } = useForm({
     nombres: '',
     apellidos: '',
@@ -12,6 +13,22 @@ const FormularioPage = () => {
     username: '',
     password: '',
   });
+
+  // Cargar datos desde localStorage cuando el componente se monta
+  useEffect(() => {
+    const savedData = localStorage.getItem('formData');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      Object.keys(parsedData).forEach((key) => {
+        values[key] = parsedData[key]; // Actualiza los valores con los datos guardados
+      });
+    }
+  }, []);
+
+  // Guardar datos en localStorage cada vez que cambian los valores
+  useEffect(() => {
+    localStorage.setItem('formData', JSON.stringify(values));
+  }, [values]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

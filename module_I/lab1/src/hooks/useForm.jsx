@@ -1,7 +1,7 @@
 // src/hooks/useForm.jsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const useForm = (initialValues) => {
   const [values, setValues] = useState(initialValues);
@@ -14,19 +14,6 @@ export const useForm = (initialValues) => {
       [name]: value,
     }));
   };
-
-  // Cargar datos desde localStorage cuando el componente se monta
-  useEffect(() => {
-    const savedData = localStorage.getItem('formData');
-    if (savedData) {
-      setValues(JSON.parse(savedData));
-    }
-  }, []);
-
-  // Guardar datos en localStorage cada vez que cambian los valores
-  useEffect(() => {
-    localStorage.setItem('formData', JSON.stringify(values));
-  }, [values]);
 
   return { values, handleChange };
 };
