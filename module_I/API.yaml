@@ -1,0 +1,195 @@
+openapi: 3.0.3
+info:
+  title: Game Score Manager API
+  version: 1.3.10
+  description: El proyecto Sistema de Gestión de Puntuaciones es una aplicación web fullstack que permite gestionar y mostrar las puntuaciones (scores) de los jugadores de un videojuego en línea. Los jugadores podrán registrarse en la plataforma, iniciar sesión, y sus puntuaciones se registrarán automáticamente cuando jueguen. Las puntuaciones más altas se mostrarán en un ranking global. Los administradores podrán gestionar el contenido de las puntuaciones y usuarios desde un panel de administración.
+  contact:
+    email: kevinmorenos@gmail.com
+    name: Kevin Moreno
+  license:
+    name: Apache 2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0"
+servers:
+  - url:  'http://localhost:3000/api/v1/'
+  - url:  'http://172.22.202.139:3000/api/v1'
+tags:
+  - name: Users
+    description: Domain about user data
+  - name: Scores
+    description: Domain about scores data
+  - name: Authentication
+    description: Domain about authentication options.
+paths:
+  /auth/register:
+    post:
+      summary: Create user
+      tags:
+        - Authentication
+      description: auth user with username email  or username, and password
+      operationId: registrar
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201' :
+          description: User register succesful
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/UserResponse'
+        '400' :
+          description: User bad request
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/ErrorResponse400'
+        '409' :
+          description: User Conflict
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/ErrorResponse409'
+
+  /auth/login:
+    post:
+      summary: login User
+      tags: 
+        - Authentication
+      description: login with email and password
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200' :
+          description: User login succesful
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/LoginResponse'
+        '400' :
+          description: User bad request
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/ErrorResponse400'
+        '500' :
+          description: internal server error
+          content:
+            application/json: 
+              schema: 
+                $ref:  '#/components/schemas/ErrorResponse409'
+      
+
+
+      
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "name"
+        username:
+          type: string
+          example: "username"
+        role:
+          type: string
+          enum: 
+            - administrator
+            - player
+          example: "player"
+        email:
+          type: string
+          format: email
+          example: "kevin@email.com"
+        password:
+          type: string
+          format: password
+          example: "123jfdl"
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "kevin@email.com"
+        password:
+          type: string
+          format: password
+          example: "123jfdl"
+
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'uuid'
+        name:
+          type: string
+          example: "kevin"
+        email:
+          type: string
+          format: email
+          example: "kevin@email.com"
+        password:
+          type: string
+          format: password
+          example: "123jfdl"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-10-06T10:15:30Z"
+          description: "fecha de creacion del usuario"
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" 
+
+
+    ErrorResponse400:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Invalid email or password"
+        statusCode:
+          type: integer
+          example: 400
+    ErrorResponse409:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Conflict"
+        statusCode:
+          type: integer
+          example: 409
+    ErrorResponse500:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "internal server error"
+        statusCode:
+          type: integer
+          example: 500
+
+
+    
+
+        
+
+

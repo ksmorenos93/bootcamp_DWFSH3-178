@@ -7,11 +7,13 @@ export default function Lab5() {
   
   const {value: valueFirstName, bind: bindFirstname, reset: resetFirstname} = useInputHook();
   const {value: valueLastname, bind: bindLastname, reset: resetLastname} = useInputHook();
+
   
-  const handleSubmit = event => {
+  const handleSubmit = event => event => {
     event.preventDefault();
-    console.log(valueFirstName, valueLastname);
-  };
+    console.log(value);
+    reset();
+  }
   return (
     <div>
       {title}

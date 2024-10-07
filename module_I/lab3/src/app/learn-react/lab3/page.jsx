@@ -13,7 +13,7 @@ export default function Lab3() {
       .catch(error => console.log(error));
   }, []);
   
-  useEffect(() => {
+  useEffect(() => {/home/kevinmoreno/bootcamp_DWFSH3-178/module_I/lab3/.next
     users && users.length > 0 && setTimeout(() => alert("cargue usuarios"), 2000);
     /*
     if (users && users.length > 0) {

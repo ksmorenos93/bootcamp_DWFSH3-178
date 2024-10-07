@@ -8,6 +8,7 @@ export default function Lab4() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(`firstName: ${firstName}`);
+    console.log(`lastname: ${lastname}`)
   };
   
   const onChange = (event, setValue) => setValue(event.target.value);
@@ -18,6 +19,7 @@ export default function Lab4() {
         <label>Nombre:</label>
         <input
           name="firstName"
+          lastname="lastname"
           type="text"
           onChange={(event) => onChange(event, setFirstName)}
         />
