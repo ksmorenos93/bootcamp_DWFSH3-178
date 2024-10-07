@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Game Score Manager API
   version: 1.3.10
-  description: El proyecto Sistema de Gestión de Puntuaciones es una aplicación web fullstack que permite gestionar y mostrar las puntuaciones (scores) de los jugadores de un videojuego en línea. Los jugadores podrán registrarse en la plataforma, iniciar sesión, y sus puntuaciones se registrarán automáticamente cuando jueguen. Las puntuaciones más altas se mostrarán en un ranking global. Los administradores podrán gestionar el contenido de las puntuaciones y usuarios desde un panel de administración.
+  description: El proyecto Sistema de Gestión de Puntuaciones es una aplicación web fullstack que permite gestionar y mostrar las puntuaciones (scores) de los jugadores de un videojuego en línea.
   contact:
     email: kevinmorenos@gmail.com
     name: Kevin Moreno
@@ -19,6 +19,7 @@ tags:
     description: Domain about scores data
   - name: Authentication
     description: Domain about authentication options.
+
 paths:
   /auth/register:
     post:
@@ -85,10 +86,270 @@ paths:
             application/json: 
               schema: 
                 $ref:  '#/components/schemas/ErrorResponse409'
-      
+  /users/profile/{userId}:
+    get:
+      summary: Get user profile
+      tags:
+        - Users
+      description: Retrieve the profile of the authenticated player.
+      operationId: getUserProfile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user whose profile is being retrieved.
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
+
+    put:
+      summary: Update user profile
+      tags:
+        - Users
+      description: Update user data.
+      operationId: updateUserProfile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user whose profile is being updated.
+          schema:
+            type: string
+            example: 'uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse400'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
+
+  /users/scores/{userId}:
+    get:
+      summary: Get user scores
+      tags:
+        - Scores
+      description: List all scores of the player.
+      operationId: getUserScores
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user whose scores are being retrieved.
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        '200':
+          description: User scores retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScoreResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
 
 
-      
+  /scores/{userId}:
+    post:
+      summary: Add a new score
+      tags:
+        - Scores
+      description: Add a new score from the video game.
+      operationId: addUserScore
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user adding the score.
+          schema:
+            type: string
+            example: 'uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreRequest'
+      responses:
+        '201':
+          description: Score added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse400'
+
+  /scores/leaderboard:
+    get:
+      summary: Get global leaderboard
+      tags:
+        - Scores
+      description: Retrieve the global ranking of the best players.
+      operationId: getLeaderboard
+      responses:
+        '200':
+          description: Leaderboard retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntry'
+
+  /users/admin:
+    get:
+      summary: List and manage players
+      tags:
+        - Users
+      description: Only admin can list and manage players.
+      operationId: listManagePlayers
+      responses:
+        '200':
+          description: Players listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+        '403':
+          description: Forbidden - Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse403'
+
+  /users/admin/{userId}:
+    patch:
+      summary: Enable or disable users
+      tags:
+        - Users
+      description: Only admin can enable or disable users.
+      operationId: toggleUserStatus
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user to enable or disable.
+          schema:
+            type: string
+            example: 'uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: User status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
+
+    delete:
+      summary: Delete user
+      tags:
+        - Users
+      description: Only admin can delete users.
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user to delete.
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
+
+  /users/admin/scores/{userId}:
+    delete:
+      summary: Delete a specific score
+      tags:
+        - Users
+      description: Only admin can delete a specific score.
+      operationId: deleteUserScore
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user whose score is being deleted.
+          schema:
+            type: string
+            example: 'uuid'
+      responses:
+        '204':
+          description: Score deleted successfully
+        '404':
+          description: User or score not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse404'
+
 components:
   schemas:
     UserRequest:
@@ -115,19 +376,6 @@ components:
           format: password
           example: "123jfdl"
 
-    LoginRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          example: "kevin@email.com"
-        password:
-          type: string
-          format: password
-          example: "123jfdl"
-
-
     UserResponse:
       type: object
       properties:
@@ -151,23 +399,134 @@ components:
           example: "2024-10-06T10:15:30Z"
           description: "fecha de creacion del usuario"
 
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "kevin@email.com"
+        password:
+          type: string
+          format: password
+          example: "123jfdl"
+
     LoginResponse:
       type: object
       properties:
         token:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" 
+    
+    
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "New Name"
+        username:
+          type: string
+          example: "newusername"
+        email:
+          type: string
+          format: email
+          example: "newemail@email.com"
+        role:
+          type: string
+          enum:
+            - administrator
+            - player
+          example: "player"
 
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'uuid'
+        name:
+          type: string
+          example: "Kevin"
+        username:
+          type: string
+          example: "kevinmoreno"
+        email:
+          type: string
+          format: email
+          example: "kevin@email.com"
+        role:
+          type: string
+          enum:
+            - administrator
+            - player
+          example: "player"
+
+    ScoreRequest:  
+      type: object
+      properties:
+        score:
+          type: integer
+          example: 1500
+
+    ScoreResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 'uuid'
+        score:
+          type: integer
+          example: 1000
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-10-06T10:15:30Z"
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 'uuid'
+        username:
+          type: string
+          example: "kevinmoreno"
+        score:
+          type: integer
+          example: 2000
+
+
+    ErrorResponse404:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "User not found"
+        statusCode:
+          type: integer
+          example: 404
 
     ErrorResponse400:
       type: object
       properties:
         message:
           type: string
-          example: "Invalid email or password"
+          example: "Bad request"
         statusCode:
           type: integer
           example: 400
+
+    ErrorResponse403:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Forbidden - Admin access required"
+        statusCode:
+          type: integer
+          example: 403
+
     ErrorResponse409:
       type: object
       properties:
@@ -177,19 +536,3 @@ components:
         statusCode:
           type: integer
           example: 409
-    ErrorResponse500:
-      type: object
-      properties:
-        message:
-          type: string
-          example: "internal server error"
-        statusCode:
-          type: integer
-          example: 500
-
-
-    
-
-        
-
-
