@@ -3,13 +3,14 @@
 import {Col, Container, Row, ListGroup} from "react-bootstrap";
 import Header from "lab4/components/shared/header/page";
 import {useEffect, useState} from "react";
+import withAuth from "lab4/hoc/with-auth";
 
-export default function ProductPage() {
+function ProductPage() {
   
   let [product, setProduct] = useState([]);
   
   useEffect(() => {
-    fetch("http://localhost:3000/api")
+    fetch("http://localhost:3000/api/products")
       .then(res => res.json())
       .then(data => setProduct(data))
       .catch(err => console.log(err));
@@ -32,3 +33,5 @@ export default function ProductPage() {
     </Container>
   )
 }
+
+export default ProductPage;
