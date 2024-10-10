@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "lab_use_effect/*": ["./src/*"]
+    }
+  }
+}
