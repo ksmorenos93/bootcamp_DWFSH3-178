@@ -1,26 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {Container, Row, Col, ListGroup } from "react-bootstrap";
 
+import {useGetProductsQuery} from "lab9/store/services/product.api";
+
 export default function Product() {
-  const URL = 'http://localhost:3000/api/v1/products';
-  const [products, setProducts] = useState([]);
   
-  useEffect(()=> {
-    fetch(URL)
-      .then(response => response.json())
-      .then(data => setProducts(data))
-      .catch(error => console.log(error));
-  }, []);
-  
+  const { data, error, isLoading } = useGetProductsQuery();
+ 
   return (
     <Container>
       <Row>
         <Col>
           <ListGroup>
-            {products && products.length > 0 && products.map((item, index) => (
-              <ListGroup.Item key={item.id}>{item.name}, precio {item.price}</ListGroup.Item>
+            {data && data.length > 0 && data.map((item, index) => (
+              <ListGroup.Item key={item.id}>{item.title}, precio {item.body}</ListGroup.Item>
             ))}
           </ListGroup>
         </Col>
