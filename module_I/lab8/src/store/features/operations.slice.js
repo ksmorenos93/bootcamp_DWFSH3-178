@@ -13,7 +13,7 @@ export const operationsSlice = createSlice({
   reducers: {
     getDivision: (state, action) => {
       console.log(`getDivision::action ${JSON.stringify(action)}`);
-      state.division = action.payload.division / action.payload.dividen;
+      state.division = action.payload.divisor / action.payload.dividend;
     },
     getModule: (state, action) => {
       console.log(`getModule::action ${JSON.stringify(action)}`);
