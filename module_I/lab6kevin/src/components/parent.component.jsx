@@ -1,7 +1,7 @@
 "use client"
 
 import { Fragment, useState } from "react";
-import ChildComponent from "./child.component";
+import ChildComponent from "lab6kevin/components/child.component";
 
 const ParentComponent = () => {
     const [count, setCount] = useState(0);
@@ -13,7 +13,7 @@ const ParentComponent = () => {
                 <small> No utilizar el estado de conteo</small>
             </div>
 
-            <ChildComponent count={count} setCount={setCount}/>
+            <ChildComponent />
         </Fragment>
     )
 }

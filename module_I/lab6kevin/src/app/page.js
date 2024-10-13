@@ -5,6 +5,5 @@ import ParentComponent from "lab6kevin/components/parent.component";
 export default function Home() {
   return (
     <ParentComponent/>
-    
   );
 }
