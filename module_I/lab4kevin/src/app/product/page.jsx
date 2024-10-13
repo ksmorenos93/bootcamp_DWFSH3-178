@@ -3,8 +3,9 @@
 import {Container, Row, Col, ListGroup} from "react-bootstrap";
 import Header from "lab4kevin/components/shared/header/page";
 import { useEffect, useState } from "react";
+import withAuth from "lab4kevin/hoc/with-auth";
 
-export default function ProductPage() {
+function ProductPage() {
 
     let [product, setProduct]= useState([]);
 
@@ -34,3 +35,5 @@ export default function ProductPage() {
        
     )
 }
+
+export default withAuth(ProductPage);
